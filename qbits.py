@@ -44,3 +44,42 @@ def make_U(chain, n):
     
     f = lambda x:res
     return gate(n, f)
+
+def combine(chain, n):
+
+    vis = [0] * n
+    mark = 0
+    res = sympy.ones(2**n, 2**n)
+    for g in chain:
+        mark = 0
+        for j in g.opt_list:
+            vis[j] = 1
+            mark |= 1 << j
+
+        mark = (~mark) & ((1 << n) - 1)
+        oplist = genSubset(mark)
+
+        for i in range(g.gate.mat.rows):
+            for j in range(g.gate.mat.cols):
+                for si in oplist:
+                    for sj in oplist:
+                        mi = mapBit(i, si, g.opt_list)
+                        mj = mapBit(j, sj, g.opt_list)
+                        res[mi, mj] = res[mi, mj] * g.gate.mat[i, j]
+
+    matI = sympy.eye(2)
+    
+    for p in range(len(vis)):
+        if vis[p] == 0:
+            mark = 1 << p
+            mark = (~mark) & ((1 << n) - 1)
+            oplist = genSubset(mark)
+            for i in range(matI.rows):
+                for j in range(matI.cols):
+                    for si in oplist:
+                        for sj in oplist:
+                            mi = mapBit(i, si, [p])
+                            mj = mapBit(j, sj, [p])
+                            res[mi, mj] = res[mi, mj] * matI[i, j]
+    f = lambda x:res
+    return gate(n, f)

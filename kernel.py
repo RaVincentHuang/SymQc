@@ -24,4 +24,28 @@ def make_U(chain, n):
 
 
 def do_mul(state: Q_state, g: gate_call) -> Q_state:
-    state
+    if len(g.opt_list) == 1:
+        t = g.opt_list[0]
+        sec = 1 << t
+        U = g.gate
+        for u in range(0, state.exp // sec, 2):
+            for v in range(sec):
+                idx = u * sec + v
+                state.state[idx], state.state[idx + sec] = U * sympy.Matrix([state.state[idx], state.state[idx + sec]])
+    else:
+        t, a = g.opt_list[0], g.opt_list[1]
+        ctrl = 1 << a
+        sec = 1 << t
+        U = g.gate.mat
+        idx = 0
+        for _ in range(state.exp // 4):
+            if (idx >> t) & 0b1 == 1:
+                idx += sec
+            if (idx >> a) & 0b1 == 0:
+                idx += ctrl
+            state.state[idx], state.state[idx + sec] = U * sympy.Matrix([state.state[idx], state.state[idx + sec]])
+            idx += 1
+    return state
+
+
+

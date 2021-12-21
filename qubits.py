@@ -6,8 +6,8 @@ from gates import *
 class Q_state:
     def __init__(self, n=6):
         self.size = n
-        exp = 1 << n
-        s = "a:" + str(exp)
+        self.exp = 1 << n
+        s = "a:" + str(self.exp)
         self.state = sympy.Matrix(sympy.symbols(s))
 
 
@@ -22,7 +22,6 @@ class gate_call:
     def __init__(self, g: gate, s: list):
         self.gate = g
         self.opt_list = s
-
 
 
 def make_U(chain, n):

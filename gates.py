@@ -23,7 +23,7 @@ def H(n=0):
 
 
 def CNOT(n=0):
-    return sympy.Matrix([[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 0, 1], [0, 0, 1, 0]])
+    return sympy.Matrix([[0, 1], [1, 0]])
 
 
 def S(n=0):
@@ -39,7 +39,7 @@ def SWAP(n=0):
 
 
 def CZ(n=0):
-    return sympy.Matrix([[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0], [0, 0, 0, -1]])
+    return sympy.Matrix([[1, 0], [0, -1]])
 
 
 def CS(n=0):

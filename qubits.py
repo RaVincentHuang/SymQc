@@ -24,6 +24,7 @@ class gate_call:
         self.opt_list = s
 
 
+
 def make_U(chain, n):
     seq = sorted(chain, key=lambda x: x.opt_list)
 

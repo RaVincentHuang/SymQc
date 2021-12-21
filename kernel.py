@@ -1,6 +1,6 @@
 import sympy
 from utils import Kron
-from qubits import gate, lib_call
+from qubits import gate, lib_call, gate_call, Q_state
 
 
 def make_U(chain, n):
@@ -21,3 +21,7 @@ def make_U(chain, n):
         now += 1
 
     return gate(n, lambda x: res)
+
+
+def do_mul(state: Q_state, g: gate_call) -> Q_state:
+    state

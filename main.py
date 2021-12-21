@@ -12,10 +12,6 @@ C = [gate_call(gate(1, lib_call("X")), [0]), gate_call(gate(1, lib_call("Y")), [
 sympy.pprint(make_U(A, 2).mat * make_U(B, 2).mat)
 sympy.pprint(make_U(C, 2).mat)
 
-
-
-#
-#
 # Q.state = make_U(g, 6).mat * Q.state
 # print(Q.state)
 # print("============================================================")
@@ -28,4 +24,4 @@ sympy.pprint(make_U(C, 2).mat)
 # Q.state = make_U(g, 6).mat * Q.state
 # sympy.pprint(Q.state)
 # sympy.pprint(make_U(g, 6).mat)
-#
+

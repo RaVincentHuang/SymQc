@@ -19,9 +19,10 @@ class gate:
 
 
 class gate_call:
-    def __init__(self, g: gate, s: list):
+    def __init__(self, g: gate, s: list, c = []):
         self.gate = g
         self.opt_list = s
+        self.ctrl_list = c
 
 
 def make_U(chain, n):
@@ -50,9 +51,14 @@ def combine(chain, n):
     res = sympy.ones(2**n, 2**n)
     for g in chain:
         mark = 0
+        ctrlmark = 0
         for j in g.opt_list:
             vis[j] = 1
             mark |= 1 << j
+        for j in g.ctrl_list:
+            ctrlmark |= 1 << j
+
+        print(ctrlmark)
 
         mark = (~mark) & ((1 << n) - 1)
         oplist = genSubset(mark)
@@ -63,7 +69,10 @@ def combine(chain, n):
                     for sj in oplist:
                         mi = mapBit(i, si, g.opt_list)
                         mj = mapBit(j, sj, g.opt_list)
-                        res[mi, mj] = res[mi, mj] * g.gate.mat[i, j]
+                        if(ctrlmark and mi & ctrlmark and ctrlmark & mj):
+                            res[mi, mj] = res[mi, mj] * g.gate.mat[i, j]
+                        else:
+                            res[mi, mj] = res[mi, mj] * (i == j)
 
     matI = sympy.eye(2)
     

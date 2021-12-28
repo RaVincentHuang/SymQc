@@ -1,13 +1,13 @@
 from sympy import Matrix
 
 
-def Kron(A, B):
+def kron(A, B):
     return Matrix(
         [[A.row(i // B.rows)[j // B.cols] * B.row(i % B.rows)[j % B.cols]
           for j in range(A.cols * B.cols)]
          for i in range(A.rows * B.rows)]
     )
-def genSubset(s):
+def gen_subset(s):
     res = []
     now = s
     while(now):
@@ -16,8 +16,22 @@ def genSubset(s):
     res.append(now)
     return res
 
-def mapBit(x, s, mapp):
+def map_bit(x, s, mapp):
     for i in range(len(mapp)):
         s |= ((x >> i) & 1) << mapp[i]
     return s
 
+def get_mark(num, l):
+    mark = 0
+    for i in num:
+        mark |= 1 << i
+    if l != 0:
+        mark = (~mark) & ((1 << l) - 1)
+    return mark
+
+def get_discrete(x):
+    rx = sorted([(i, j) for i, j in zip(x, range(len(x)))])
+    res = [0] * len(x)
+    for i in range(len(rx)):
+        res[rx[i][1]] = i
+    return res

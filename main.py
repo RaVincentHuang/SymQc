@@ -3,7 +3,7 @@ import sympy as sy
 from sympy import pprint
 from utils import *
 from gates import *
-from qbits import *
+from qubits import *
 
 a = sy.symbols('a:2:2')
 A = Matrix([[a[0],a[1]],[a[2],a[3]]])
@@ -30,54 +30,69 @@ z.mat = D
 cnot = gate(2, CNOT)
 cnot.mat = C
 
+cx = gate(1, X)
+x.mat = A
+xx = gate_call(x, [0], [1])
+
+
+# CX = combine([xx], 2)
+# print("CX")
+# pprint(CX.mat)
+
 xx = gate_call(x, [0])
 yy = gate_call(y, [1])
 x0 = make_U([xx], 2)
 y0 = make_U([yy], 2)
 xy = make_U([xx, yy], 2)
+
+xx = gate_call(x, [1])
+yy = gate_call(y, [0])
+yx = make_U([yy, xx ], 2)
+
 # print("x")
 # pprint(x0.mat)
 # print("y")
 # pprint(y0.mat)
-# print("xy")
-# pprint(xy.mat)
-# print("xy")
-# pprint(x0.mat * y0.mat)
-
 print("xy")
 pprint(xy.mat)
+print("yx")
+pprint(yx.mat)
+# pprint(x0.mat * y0.mat)
 
-xy0 = make_U([xx, yy], 3)
-print("xy0")
-pprint(xy0.mat)
+# print("xy")
+# pprint(xy.mat)
 
-xx = gate_call(x, [0])
-yy = gate_call(y, [2])
-zz = gate_call(z, [1])
-x0y = make_U([xx, yy], 3)
-xzy = make_U([xx, zz, yy], 3)
+# xy0 = make_U([xx, yy], 3)
+# print("xy0")
+# pprint(xy0.mat)
 
-print("x0y")
-pprint(x0y.mat)
+# xx = gate_call(x, [0])
+# yy = gate_call(y, [2])
+# zz = gate_call(z, [1])
+# x0y = make_U([xx, yy], 3)
+# xzy = make_U([xx, zz, yy], 3)
 
-print("xzy")
-pprint(xzy.mat)
+# print("x0y")
+# pprint(x0y.mat)
+
+# print("xzy")
+# pprint(xzy.mat)
 
 
-X0Y = combine([xx, yy], 3)
-print("X0Y")
-pprint(X0Y.mat)
+# X0Y = combine([xx, yy], 3)
+# print("X0Y")
+# pprint(X0Y.mat)
 
-XZY = combine([xx, zz, yy], 3)
-pprint(XZY.mat)
+# XZY = combine([xx, zz, yy], 3)
+# pprint(XZY.mat)
 
-ccnot = gate_call(cnot, [1,2])
+# ccnot = gate_call(cnot, [1,2])
 
-print("reday")
-make_U([yy, xx], 3)
+# print("reday")
+# make_U([yy, xx], 3)
 
-print(XZY.mat == xzy.mat)
-print(X0Y.mat == x0y.mat)
+# print(XZY.mat == xzy.mat)
+# print(X0Y.mat == x0y.mat)
 
 """
 
@@ -108,22 +123,22 @@ print(X0Y.mat == x0y.mat)
 ⎣   0        0     a₁₀⋅b₁₀  a₁₁⋅b₁₀     0        0     a₁₀⋅b₁₁  a₁₁⋅b₁₁⎦
 
 """
-Q = Q_state(2)
+# Q = Q_state(2)
 
-g = [gate_call(gate(1, lib_call("X")), [0]), gate_call(gate(1, lib_call("Y")), [1]),
-     gate_call(gate(1, lib_call("Z")), [2]), gate_call(gate(1, lib_call("H")), [3]),
-     gate_call(gate(2, lib_call("CNOT")), [4, 5])]
+# g = [gate_call(gate(1, lib_call("X")), [0]), gate_call(gate(1, lib_call("Y")), [1]),
+#      gate_call(gate(1, lib_call("Z")), [2]), gate_call(gate(1, lib_call("H")), [3]),
+#      gate_call(gate(2, lib_call("CNOT")), [4, 5])]
 
-A = [gate_call(gate(1, lib_call("X")), [0])]
-B = [gate_call(gate(1, lib_call("Y")), [1])]
-C = [gate_call(gate(1, lib_call("X")), [0]), gate_call(gate(1, lib_call("Y")), [1])]
-# sympy.pprint(make_U(A, 2).mat * make_U(B, 2).mat)
-# sympy.pprint(make_U(C, 2).mat)
-sympy.pprint(Q.state)
-X = gate_call(gate(2, lib_call("CZ")), [0, 1])
-Q = do_mul(Q, X)
-X = gate_call(gate(2, lib_call("CZ")), [0, 1])
-sympy.pprint(Q.state)
+# A = [gate_call(gate(1, lib_call("X")), [0])]
+# B = [gate_call(gate(1, lib_call("Y")), [1])]
+# C = [gate_call(gate(1, lib_call("X")), [0]), gate_call(gate(1, lib_call("Y")), [1])]
+# # sympy.pprint(make_U(A, 2).mat * make_U(B, 2).mat)
+# # sympy.pprint(make_U(C, 2).mat)
+# sympy.pprint(Q.state)
+# X = gate_call(gate(2, lib_call("CZ")), [0, 1])
+# Q = do_mul(Q, X)
+# X = gate_call(gate(2, lib_call("CZ")), [0, 1])
+# sympy.pprint(Q.state)
 
 
 # Q.state = make_U(g, 6).mat * Q.state

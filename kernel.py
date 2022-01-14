@@ -1,7 +1,8 @@
 from utils import *
 import sympy as sy
 from gate import Gate
-from QCIS_instr import QCIS_instr
+from QCIS_instr import QCIS_instr, QCISOpCode
+from gates_lib import lib_gate
 
 
 class Qsim:
@@ -15,7 +16,24 @@ class Qsim:
 
     def apply_instr(self, instr: QCIS_instr):
         if instr.op_code.is_single_qubit_op():
-            self.apply_gate()
+            gate = Gate(1, lib_gate(instr))
+            qubit = int(instr.qubit[1:])
+            self.apply_gate(gate, [qubit])
+        elif instr.op_code.is_two_qubit_op():
+            if instr.op_code == QCISOpCode.CNOT or instr.op_code == QCISOpCode.CZ:
+                gate = Gate(1, lib_gate(instr), 1)
+                qubit = int(instr.target_qubit[1:])
+                ctrl = int(instr.control_qubit[1:])
+                self.apply_gate(gate, [qubit], [ctrl])
+            else:
+                gate = Gate(2, lib_gate(instr))
+                qubit = int(instr.target_qubit[1:])
+                ctrl = int(instr.control_qubit[1:])
+                self.apply_gate(gate, [qubit, ctrl])
+        elif instr.op_code.is_measure_op():
+            gate = Gate(1, lib_gate(instr))
+            qubit_list = [int(qubit[1:]) for qubit in instr.qubits_list]
+            self.apply_gate(gate, qubit_list)
 
     def apply_gate(self, gate: Gate, qubit_map: list, ctrl_map=None) -> sy.Matrix:
         if ctrl_map is None:
@@ -39,3 +57,21 @@ class Qsim:
                 for i, j in zip(addrs, x):
                     self.state[i] = j
         return self.state
+
+
+class Circuit:
+    def __init__(self, n):
+        self.n = n
+        self.gates = []
+        self.matrix = sy.eye(2 ** n)
+
+    def add_gates(self, gates: list, init=0):
+        pass
+
+    @staticmethod
+    def make_from_gates_sequence(gates_seqence: list, n=0):
+        pass
+
+    @staticmethod
+    def combine_gates(gates: list, n):
+        pass

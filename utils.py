@@ -7,19 +7,23 @@ def kron(A, B):
           for j in range(A.cols * B.cols)]
          for i in range(A.rows * B.rows)]
     )
+
+
 def gen_subset(s):
     res = []
     now = s
-    while(now):
+    while now:
         res.append(now)
         now = (now - 1) & s
     res.append(now)
     return res
 
+
 def map_bit(x, s, mapp):
     for i in range(len(mapp)):
         s |= ((x >> i) & 1) << mapp[i]
     return s
+
 
 def get_mark(num, l):
     mark = 0
@@ -28,6 +32,7 @@ def get_mark(num, l):
     if l != 0:
         mark = (~mark) & ((1 << l) - 1)
     return mark
+
 
 def get_discrete(x):
     rx = sorted([(i, j) for i, j in zip(x, range(len(x)))])

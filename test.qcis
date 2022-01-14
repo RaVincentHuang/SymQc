@@ -1,6 +1,8 @@
     H    q0
+ SWP     q2    q3
  CNOT    q0    q1
    RX    q0  1.00
     M    q0
     M    q1
    RXY   q0  1.00 1.00
+   XY    q5  0.7854

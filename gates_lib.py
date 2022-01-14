@@ -1,6 +1,10 @@
 import sympy
 from sympy.physics.matrices import msigma
+from QCIS_instr import QCISOpCode
+from gate import Gate
 
+def RZ(azimuth):
+    pass
 
 def I(n=2):
     return sympy.eye(n)
@@ -46,8 +50,16 @@ def CS(n=0):
     return sympy.Matrix([[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0], [0, 0, 0, sympy.I]])
 
 
+def SWAP(n=0):
+    return sympy.Matrix([[1, 0, 0, 0], [0, 0, 1, 0], [0, 1, 0, 0], [0, 0, 0, 1]])
+
+
 table = {"I": I, "X": X, "Y": Y, "Z": Z, "H": H, "CNOT": CNOT, "S": S, "T": T, "SWAP": SWAP, "CZ": CZ, "CS": CS}
 
+QCIS_gate = {
+    QCISOpCode.S: S,
+
+}
 
 def lib_call(s: str):
     return table[s]
@@ -55,3 +67,4 @@ def lib_call(s: str):
 
 def my_call(mat: sympy.Matrix):
     return mat
+

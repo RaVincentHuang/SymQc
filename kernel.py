@@ -1,51 +1,41 @@
-import sympy
-from utils import Kron
-from qubits import gate, lib_call, gate_call, Q_state
+from utils import *
+import sympy as sy
+from gate import Gate
+from QCIS_instr import QCIS_instr
 
 
-def make_U(chain, n):
-    seq = sorted(chain, key=lambda x: x.opt_list)
+class Qsim:
+    def __init__(self, n):
+        self.state = sy.Matrix(sy.symbols('a:' + "%d" % (1 << n)))
+        self.qubits_num = n
+        self.global_circuit = None
 
-    now = 0
-    res = sympy.eye(1)
+    def apply(self):
+        pass
 
-    for g in seq:
-        while g.opt_list[0] != now:
-            res = Kron(lib_call("I")(2), res)
-            now += 1
-        res = Kron(g.gate.mat, res)
-        now = g.opt_list[-1] + 1
+    def apply_instr(self, instr: QCIS_instr):
+        if instr.op_code.is_single_qubit_op():
+            self.apply_gate()
 
-    while now != n:
-        res = Kron(lib_call("I")(2), res)
-        now += 1
+    def apply_gate(self, gate: Gate, qubit_map: list, ctrl_map=None) -> sy.Matrix:
+        if ctrl_map is None:
+            ctrl_map = []
+        G = gate.get_matrix(get_discrete(qubit_map))
+        qubit_map.sort()
 
-    return gate(n, lambda x: res)
+        marki = get_mark(qubit_map, 0)
+        mark = get_mark(qubit_map, self.qubits_num)
 
+        ctrl_mark = get_mark(ctrl_map, 0)
 
-def do_mul(state: Q_state, g: gate_call) -> Q_state:
-    if len(g.opt_list) == 1:
-        t = g.opt_list[0]
-        sec = 1 << t
-        U = g.gate
-        for u in range(0, state.exp // sec, 2):
-            for v in range(sec):
-                idx = u * sec + v
-                state.state[idx], state.state[idx + sec] = U * sympy.Matrix([state.state[idx], state.state[idx + sec]])
-    else:
-        t, a = g.opt_list[0], g.opt_list[1]
-        ctrl = 1 << a
-        sec = 1 << t
-        U = g.gate.mat
-        idx = 0
-        for _ in range(state.exp // 4):
-            if (idx >> t) & 0b1 == 1:
-                idx += sec
-            if (idx >> a) & 0b1 == 0:
-                idx += ctrl
-            state.state[idx], state.state[idx + sec] = U * sympy.Matrix([state.state[idx], state.state[idx + sec]])
-            idx += 1
-    return state
+        addr = gen_subset(mark)
+        addri = sorted(gen_subset(marki))
 
-
-
+        for s in addr:
+            if ctrl_mark == 0 or s & ctrl_mark:
+                addrs = [(s | i) for i in addri]
+                x = sy.Matrix([self.state[i] for i in addrs])
+                x = G * x
+                for i, j in zip(addrs, x):
+                    self.state[i] = j
+        return self.state

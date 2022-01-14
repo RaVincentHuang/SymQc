@@ -1,0 +1,6 @@
+    H    q0
+ CNOT    q0    q1
+   RX    q0  1.00
+    M    q0
+    M    q1
+   RXY   q0  1.00 1.00

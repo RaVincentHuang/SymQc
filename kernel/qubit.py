@@ -1,8 +1,8 @@
-from utils import *
+from kernel.utils import *
 import sympy
-from gate import Gate, ParametersGate
-from QCIS_instr import QCIS_instr, QCISOpCode
-from gates_lib import lib_gate
+from kernel.gate import Gate, ParametersGate
+from QCIS.instr import QCIS_instr, QCISOpCode
+from kernel.gates_lib import lib_gate
 
 
 class Qsim:

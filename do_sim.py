@@ -1,9 +1,9 @@
 from argparse import ArgumentParser
 from pathlib import Path
-from my_parser import QCISParser
+from QCIS.parser import QCISParser
 from sympy import init_printing
-from kernel import Qsim
-from output import store
+from kernel.qubit import Qsim
+from output.output import store
 
 
 def compiler(_prog):

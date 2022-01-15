@@ -1,8 +1,7 @@
-import os
 from sympy import Matrix, latex
-from gate import Gate
-from QCIS_instr import QCIS_instr, QCISOpCode
-from kernel import Qsim
+from kernel.gate import Gate
+from QCIS.instr import QCIS_instr, QCISOpCode
+from kernel.qubit import Qsim
 
 
 class store:

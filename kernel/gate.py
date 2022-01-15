@@ -1,6 +1,6 @@
 from math import log2
 import sympy
-from utils import *
+from kernel.utils import *
 
 
 class Gate:

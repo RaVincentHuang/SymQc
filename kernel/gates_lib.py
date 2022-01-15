@@ -1,5 +1,5 @@
 import sympy
-from QCIS_instr import QCISOpCode, QCIS_instr
+from QCIS.instr import QCISOpCode, QCIS_instr
 
 
 sigma_x = sympy.Matrix([[0, 1], [1, 0]])

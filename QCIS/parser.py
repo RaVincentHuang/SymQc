@@ -2,8 +2,8 @@ import tempfile
 
 import ply.yacc as yacc
 
-from QCIS_instr import QCISOpCode, QCIS_instr
-from lexer import QCISLexer
+from QCIS.instr import QCISOpCode, QCIS_instr
+from QCIS.lexer import QCISLexer
 
 OP_CODE_CONVERTER = {
     "MEASURE": QCISOpCode.MEASURE,

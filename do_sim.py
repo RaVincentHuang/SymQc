@@ -2,7 +2,7 @@ from argparse import ArgumentParser
 from pathlib import Path
 from my_parser import QCISParser
 from QCIS_instr import QCISOpCode
-from sympy import pprint
+from sympy import pprint, init_printing, latex
 from kernel import Qsim
 
 
@@ -53,6 +53,8 @@ if args.N is not None and args.N > max_q:
     max_q = args.N
 
 Q = Qsim(max_q)
+init_printing()
+
 
 for instr in job_arr:
     print(instr.op_code)

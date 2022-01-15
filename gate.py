@@ -1,17 +1,22 @@
-import sympy as sy
+from math import log2
+import sympy
 from utils import *
-from QCIS_instr import QCIS_instr
 
 
 class Gate:
-    def __init__(self, n, mat, ctrl=0, instr=None):
-        self.n = n
-        self.matrix = sy.Matrix(mat)
+    def __init__(self, mat, ctrl=0):
+        self.matrix = sympy.Matrix(mat)
+        assert (self.matrix.cols == self.matrix.rows)
+        self.n = log2(self.matrix.cols)
+        assert (self.n == int(self.n))
+        self.n = int(self.n)
         self.ctrl_num = ctrl
 
-    def get_matrix(self, qubit_map, ctrl_map=None, n=0):
+    def get_matrix(self, qubit_map=None, ctrl_map=None, n=0):
         if ctrl_map is None:
             ctrl_map = []
+        if qubit_map is None:
+            qubit_map = []
         qubit_map = list(qubit_map)
         ctrl_map = list(ctrl_map)
 
@@ -25,9 +30,9 @@ class Gate:
             if ctrl_map == [] and qubit_map == []:
                 return self.matrix
 
-        res = sy.ones(2 ** n, 2 ** n)
+        res = sympy.ones(2 ** n, 2 ** n)
 
-        matI = sy.eye(2)
+        matI = sympy.eye(2)
 
         for p in range(n):
             if p not in qubit_map:
@@ -61,19 +66,22 @@ class Gate:
         return res
 
 
-class Circuit:
-    def __init__(self, n):
-        self.n = n
-        self.gates = []
-        self.matrix = sy.eye(2 ** n)
+# SingleQubitGate, TwoQubitGate, MultiQubitGate
 
-    def add_gates(self, gates: list, init=0):
-        pass
+class ParametersGate(Gate):
+    def __init__(self, mat, ctrl=0, parameters=None):
+        Gate.__init__(self, mat, ctrl)
+        if parameters is None:
+            parameters = []
+        self.parameters = parameters
 
-    @staticmethod
-    def make_from_gates_sequence(gates_sequence: list, n=0):
-        pass
-
-    @staticmethod
-    def combine_gates(gates: list, n):
-        pass
+    def get_matrix(self, qubit_map=None, ctrl_map=None, n=0, parameters=None):
+        if parameters is None:
+            parameters = []
+        if ctrl_map is None:
+            ctrl_map = []
+        if qubit_map is None:
+            qubit_map = []
+        res = Gate.get_matrix(self, qubit_map, ctrl_map, n)
+        res = res.subs([(self.parameters[i], parameters[i]) for i in range(len(parameters))])
+        return res

@@ -1,14 +1,19 @@
 import sympy
 from utils import gen_subset, get_mark, map_bit
 
+"""
+The implementation of class Circuit
+"""
+
 
 class Circuit:
     def __init__(self, n):
-        self.n = n
+        self.n = n  # the number of qubits
         self.gates = []
         self.matrix = sympy.eye(2 ** n)
 
     def add_gates(self, gates: list, init=0):
+        """Add gates to the circuit"""
         if self.matrix == sympy.eye(2 ** self.n):
             self.matrix = Circuit.combine_gates(gates, self.n)
         else:
@@ -17,6 +22,7 @@ class Circuit:
 
     @staticmethod
     def make_from_gates_sequence(gates_sequence: list, n=0):
+        """Make a circuit from a sequence of gates"""
         if n == 0:
             for gates in gates_sequence:
                 for gate in gates:
@@ -30,7 +36,7 @@ class Circuit:
 
     @staticmethod
     def combine_gates(gates: list, n):
-
+        """Build the utility matrix of these gates"""
         vis = [0] * n
         mark = 0
         res = sympy.ones(2 ** n, 2 ** n)
@@ -75,4 +81,3 @@ class Circuit:
                             res[mi, mj] = res[mi, mj] * mat[i, j]
 
         return res
-

@@ -79,7 +79,6 @@ class QCIS_instr(object):
         """
         self.op_code = op_code
 
-        # TODO This part is awkward. Refactor is needed!
         if op_code.is_two_qubit_op():
             if self.op_code == QCISOpCode.CP or self.op_code == QCISOpCode.FSIM:
                 self.azimuth = kwargs["azimuth"]
@@ -124,7 +123,6 @@ class QCIS_instr(object):
         raise ValueError("Found unrecognized opcode: ", op_code)
 
     def __str__(self):
-        # TODO Update this method after refactoring this class
         if self.op_code.is_two_qubit_op():
             return "Two-qubit op: {}, control: {}, target: {}".format(
                 self.op_code, self.control_qubit, self.target_qubit

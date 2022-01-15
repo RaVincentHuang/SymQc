@@ -1,7 +1,5 @@
 import tempfile
-
 import ply.yacc as yacc
-
 from QCIS_instr import QCISOpCode, QCIS_instr
 from lexer import QCISLexer
 
@@ -196,4 +194,3 @@ class QCISParser(object):
         qubit_names_list = list(self.__qubit_names)  # Turn the set to a list
         qubit_names_list.sort()  # Sort by alphabetic
         return success, self.__instructions, qubit_names_list
-

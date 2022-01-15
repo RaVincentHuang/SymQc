@@ -33,7 +33,8 @@ class Qsim:
         elif instr.op_code.is_measure_op():
             gate = Gate(lib_gate(instr))
             qubit_list = [int(qubit[1:]) for qubit in instr.qubits_list]
-            self.apply_gate(gate, qubit_list)
+            for qubit in qubit_list:
+                self.apply_gate(gate, [qubit])
 
     def apply_gate(self, gate: Gate, target_qubits: list, parameters=None, extra_optional_control_qubits=None) \
             -> sympy.Matrix:

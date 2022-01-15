@@ -2,6 +2,7 @@ from sympy import Matrix
 
 
 def kron(A, B):
+    """Return the Kronecker product of matrix A and matrix B"""
     return Matrix(
         [[A.row(i // B.rows)[j // B.cols] * B.row(i % B.rows)[j % B.cols]
           for j in range(A.cols * B.cols)]

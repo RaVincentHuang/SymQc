@@ -5,8 +5,13 @@ from sympy import init_printing
 from kernel.qubit import Qsim
 from output.output import store
 
+"""
+The main programme
+"""
+
 
 def compiler(_prog):
+    """"""
     _parser = QCISParser()
     success, instructions, names = _parser.parse(data=_prog)
     if not success:
@@ -21,6 +26,7 @@ def compiler(_prog):
     return instructions, max_qubit + 1
 
 
+# 1. Argument parsing
 my_parser = ArgumentParser(description='QCIS simulator system based on symbolic operation')
 
 my_parser.add_argument('input', type=str, help='the name of the input QCIS file')
@@ -43,6 +49,8 @@ if qcis_fn.suffix != '.qcis':
 
 if not qcis_fn.exists():
     raise ValueError("cannot find the given file: {}".format(qcis_fn))
+
+# 2. Read the QCIS file
 prog = qcis_fn.open('r').read()
 
 job_arr, max_q = compiler(prog)
@@ -50,10 +58,10 @@ job_arr, max_q = compiler(prog)
 if args.N is not None and args.N > max_q:
     max_q = args.N
 
+# 3. Start simulating
 Q = Qsim(max_q)
 init_printing()
 save = store(Q)
-
 
 for instr in job_arr:
     save.save_instr(Q.state, instr, Q.apply_instr(instr))

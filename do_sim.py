@@ -1,9 +1,9 @@
 from argparse import ArgumentParser
 from pathlib import Path
 from my_parser import QCISParser
-from QCIS_instr import QCISOpCode
-from sympy import pprint, init_printing, latex
+from sympy import init_printing
 from kernel import Qsim
+from output import store
 
 
 def compiler(_prog):
@@ -25,13 +25,11 @@ my_parser = ArgumentParser(description='QCIS simulator system based on symbolic 
 
 my_parser.add_argument('input', type=str, help='the name of the input QCIS file')
 
-my_parser.add_argument('-m', '--mode', required=False, type=str,
-                       choices=['one_shot', 'final_state'],
-                       help='the simulation mode used to simulate the given file.'
-                            ' Default to one_shot.')
+my_parser.add_argument('-l', '--output_list', required=False, nargs='+', type=int,
+                       help='the index of the instr we need the ans.')
 
-my_parser.add_argument('-n', '--num_shots', required=False, type=int, default=1,
-                       help='the number of iterations performed in the `one_shot` mode.')
+my_parser.add_argument('-o', '--obj_name', required=False, type=str, default="a.md",
+                       help='the filename of Markdown file.')
 
 my_parser.add_argument('-N', required=False, type=int, help='the number of qubits in the symbolic simulator')
 
@@ -54,13 +52,13 @@ if args.N is not None and args.N > max_q:
 
 Q = Qsim(max_q)
 init_printing()
+save = store(Q)
 
 
 for instr in job_arr:
-    print(instr.op_code)
-    if instr.op_code == QCISOpCode.RXY:
-        print("war")
-    Q.apply_instr(instr)
-    print("===============================")
-    pprint(Q.state)
-    print("===============================")
+    save.save_instr(Q.state, instr, Q.apply_instr(instr))
+
+if len(args.output_list):
+    save.output_list(args.output_list, args.input, args.obj_name)
+else:
+    save.output_all(args.input, args.obj_name)

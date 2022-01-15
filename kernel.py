@@ -36,6 +36,8 @@ class Qsim:
             for qubit in qubit_list:
                 self.apply_gate(gate, [qubit])
 
+        return gate
+
     def apply_gate(self, gate: Gate, target_qubits: list, parameters=None, extra_optional_control_qubits=None) \
             -> sympy.Matrix:
 

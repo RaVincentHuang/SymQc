@@ -1,9 +1,10 @@
 from argparse import ArgumentParser
 from pathlib import Path
-from QCIS.parser import QCISParser
+from QCIS.parser import QCISParser, QCISOpCode
 from sympy import init_printing
 from kernel.qubit import Qsim
 from output.output import store
+from output.symbol_map import symbol_map
 
 """
 The main programme
@@ -31,7 +32,7 @@ my_parser = ArgumentParser(description='QCIS simulator system based on symbolic 
 
 my_parser.add_argument('input', type=str, help='the name of the input QCIS file')
 
-my_parser.add_argument('-l', '--output_list', required=False, nargs='+', type=int,
+my_parser.add_argument('-l', '--output_list', required=False, nargs='+', type=int, default=[],
                        help='the index of the instr we need the ans.')
 
 my_parser.add_argument('-o', '--obj_name', required=False, type=str, default="a.md",
@@ -39,6 +40,7 @@ my_parser.add_argument('-o', '--obj_name', required=False, type=str, default="a.
 
 my_parser.add_argument('-N', required=False, type=int, help='the number of qubits in the symbolic simulator')
 
+my_parser.add_argument("-s", "--symbol", help="use the symbol args", action="store_true")
 args = my_parser.parse_args()
 
 qcis_fn = Path(args.input).resolve()
@@ -61,7 +63,20 @@ if args.N is not None and args.N > max_q:
 # 3. Start simulating
 Q = Qsim(max_q)
 init_printing()
-save = store(Q)
+maps = symbol_map()
+
+if args.symbol:
+    maps.use = True
+    for instr in job_arr:
+        if instr.op_code == QCISOpCode.RXY:
+            instr.altitude = maps.store_symbol("theta", instr.altitude)
+            instr.azimuth = maps.store_symbol("phi", instr.azimuth)
+        elif instr.op_code == QCISOpCode.XY or instr.op_code == QCISOpCode.XY2P or instr.op_code == QCISOpCode.XY2M:
+            instr.azimuth = maps.store_symbol("phi", instr.azimuth)
+        elif instr.op_code == QCISOpCode.RX or instr.op_code == QCISOpCode.RY or instr.op_code == QCISOpCode.RZ:
+            instr.altitude = maps.store_symbol("theta", instr.altitude)
+
+save = store(Q, maps)
 
 for instr in job_arr:
     save.save_instr(Q.state, instr, Q.apply_instr(instr))

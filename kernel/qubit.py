@@ -45,18 +45,15 @@ class Qsim:
             extra_optional_control_qubits = []
         if parameters is None:
             parameters = []
-        if gate.ctrl_num != 0:
-            qubit_map = target_qubits[gate.ctrl_num:]
-            ctrl_map = target_qubits[0: gate.ctrl_num] + extra_optional_control_qubits
-        else:
-            qubit_map = target_qubits
-            ctrl_map = [] + extra_optional_control_qubits
+
+        qubit_map = target_qubits[gate.ctrl_num:]
+        ctrl_map = target_qubits[0: gate.ctrl_num] + extra_optional_control_qubits
 
         if isinstance(gate, ParametersGate):
             G = gate.get_matrix(get_discrete(qubit_map), parameters=parameters)
         else:
             G = gate.get_matrix(get_discrete(qubit_map))
-
+        # 合并俩操作
         qubit_map.sort()
 
         marki = get_mark(qubit_map, 0)

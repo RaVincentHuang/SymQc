@@ -3,7 +3,7 @@ from pathlib import Path
 from QCIS.parser import QCISParser, QCISOpCode
 from sympy import init_printing
 from kernel.qubit import Qsim
-from output.output import store
+from output.store import store
 from output.symbol_map import symbol_map
 
 """
@@ -79,7 +79,8 @@ if args.symbol:
 save = store(Q, maps)
 
 for instr in job_arr:
-    save.save_instr(Q.state, instr, Q.apply_instr(instr))
+    gate = Q.apply_instr(instr)
+    save.save_instr(Q.state, instr, gate)
 
 if len(args.output_list):
     save.output_list(args.output_list, args.input, args.obj_name)

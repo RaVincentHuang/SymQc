@@ -28,8 +28,8 @@ class store:
             ins_str += '\t' + tmp.join([str(qubit) for qubit in instr.qubits_list])
 
         self.instr_save.append(ins_str)
-        self.state_save.append(state.copy())
-        self.gate_save.append(gate)
+        self.state_save.append(latex(state.transpose()))
+        self.gate_save.append(latex(gate.matrix))
 
     def output_list(self, instr_list: list, qcis_name="test.qcis", name='a.md'):
         file = open(name, 'w')
@@ -38,11 +38,11 @@ class store:
         for i in range(len(self.instr_save)):
             file.write("```assembly\n%d. %s\n```\n\n" % (i + 1, self.instr_save[i]))
             if i + 1 in instr_list:
-                file.write("$$\n%s\n$$\n" % latex(self.gate_save[i].matrix))
-                file.write("$$\n%s\n$$\n" % latex(self.state_save[i].transpose()))
-        file.write("**Final state** is: \n$$\n%s\n$$\n\n" % latex(self.state_save[-1].transpose()))
+                file.write("$$\n%s\n$$\n" % self.gate_save[i])
+                file.write("$$\n%s\n$$\n" % self.state_save[i])
+        file.write("**Final state** is: \n$$\n%s\n$$\n\n" % self.state_save[-1])
         if self.symbol_map.use:
-            file.write("**symbols is:\n\n**")
+            file.write("**symbols** is:\n\n")
             for x, y in self.symbol_map.symbol_table.items():
                 file.write("$%s$ : %f\t\t" % (latex(x), y))
         file.close()
@@ -53,9 +53,9 @@ class store:
         file.write("**Init state** is: \n$$\n%s\n$$\n\n" % latex(self.init_state.transpose()))
         for i in range(len(self.instr_save)):
             file.write("```assembly\n%d. %s\n```\n\n" % (i + 1, self.instr_save[i]))
-            file.write("$$\n%s\n$$\n" % latex(self.gate_save[i].matrix))
-            file.write("$$\n%s\n$$\n" % latex(self.state_save[i].transpose()))
-        file.write("**Final state** is: \n$$\n%s\n$$\n\n" % latex(self.state_save[-1].transpose()))
+            file.write("$$\n%s\n$$\n" % self.gate_save[i])
+            file.write("$$\n%s\n$$\n" % self.state_save[i])
+        file.write("**Final state** is: \n$$\n%s\n$$\n\n" % self.state_save[-1])
         if self.symbol_map.use:
             file.write("**symbols** is:\n\n")
             for x, y in self.symbol_map.symbol_table.items():

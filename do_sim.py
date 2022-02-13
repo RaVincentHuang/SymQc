@@ -66,7 +66,6 @@ init_printing()
 maps = symbol_map()
 
 if args.symbol:
-    maps.use = True
     for instr in job_arr:
         if instr.op_code == QCISOpCode.RXY:
             instr.altitude = maps.store_symbol("theta", instr.altitude)
@@ -76,13 +75,16 @@ if args.symbol:
         elif instr.op_code == QCISOpCode.RX or instr.op_code == QCISOpCode.RY or instr.op_code == QCISOpCode.RZ:
             instr.altitude = maps.store_symbol("theta", instr.altitude)
 
-save = store(Q, maps)
 
+save = store(Q, maps, args.output_list)
+
+idx = 1
 for instr in job_arr:
     gate = Q.apply_instr(instr)
-    save.save_instr(Q.state, instr, gate)
 
-if len(args.output_list):
-    save.output_list(args.output_list, args.input, args.obj_name)
-else:
-    save.output_all(args.input, args.obj_name)
+    if idx in save.out_list:
+        save.save_instr(Q.state, instr, gate)
+
+    idx += 1
+
+save.output_markdown(args.input, args.obj_name)

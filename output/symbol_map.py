@@ -9,6 +9,7 @@ class symbol_map:
         self.use = False
 
     def store_symbol(self, type, val) -> symbols:
+        self.use = True
         if type == 'theta':
             symbol = symbols('theta' + str(self.theta))
             self.theta += 1

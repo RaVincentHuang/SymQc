@@ -27,6 +27,9 @@ def map_bit(x, s, mapp):
 
 
 def get_mark(num, l):
+    """
+    
+    """
     mark = 0
     for i in num:
         mark |= 1 << i

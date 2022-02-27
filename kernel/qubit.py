@@ -6,10 +6,15 @@ from kernel.gates_lib import lib_gate
 
 
 class Qsim:
-    def __init__(self, n):
+    def __init__(self, n, name):
         self.state = sympy.Matrix(sympy.symbols('a:' + "%d" % (1 << n)))
         self.qubits_num = n
         self.global_circuit = None
+        self.map = {}
+        self.in_use = 0
+        for qubit in name:
+            self.map[qubit] = self.in_use
+            self.in_use += 1
 
     def apply(self):
         pass
@@ -17,22 +22,22 @@ class Qsim:
     def apply_instr(self, instr: QCIS_instr):
         if instr.op_code.is_single_qubit_op():
             gate = Gate(lib_gate(instr))
-            qubit = int(instr.qubit[1:])
+            qubit = self.map[instr.qubit]
             self.apply_gate(gate, [qubit])
         elif instr.op_code.is_two_qubit_op():
             if instr.op_code == QCISOpCode.CNOT or instr.op_code == QCISOpCode.CZ:
                 gate = Gate(lib_gate(instr), 1)
-                qubit = int(instr.target_qubit[1:])
-                ctrl = int(instr.control_qubit[1:])
+                qubit = self.map[instr.target_qubit]
+                ctrl = self.map[instr.control_qubit]
                 self.apply_gate(gate, [ctrl, qubit])
             else:
                 gate = Gate(lib_gate(instr))
-                qubit = int(instr.target_qubit[1:])
-                fake_ctrl = int(instr.control_qubit[1:])
+                qubit = self.map[instr.target_qubit]
+                fake_ctrl = self.map[instr.control_qubit]
                 self.apply_gate(gate, [qubit, fake_ctrl])
         elif instr.op_code.is_measure_op():
             gate = Gate(lib_gate(instr))
-            qubit_list = [int(qubit[1:]) for qubit in instr.qubits_list]
+            qubit_list = [self.map[qubit] for qubit in instr.qubits_list]
             for qubit in qubit_list:
                 self.apply_gate(gate, [qubit])
 

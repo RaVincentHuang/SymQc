@@ -20,11 +20,7 @@ def compiler(_prog):
         raise ValueError(
             "QCIS parser failed to compile the given QCIS program.")
 
-    max_qubit = 0
-    for qubit in names:
-        max_qubit = max(int(qubit[1:]), max_qubit)
-
-    return instructions, max_qubit + 1
+    return instructions, names
 
 
 # 1. Argument parsing
@@ -55,13 +51,15 @@ if not qcis_fn.exists():
 # 2. Read the QCIS file
 prog = qcis_fn.open('r').read()
 
-job_arr, max_q = compiler(prog)
+job_arr, names = compiler(prog)
 
+
+max_q = len(names)
 if args.N is not None and args.N > max_q:
     max_q = args.N
 
 # 3. Start simulating
-Q = Qsim(max_q)
+Q = Qsim(max_q, names)
 init_printing()
 maps = symbol_map()
 

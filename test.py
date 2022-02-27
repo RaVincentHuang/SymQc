@@ -1,6 +1,11 @@
-import sympy
-from kernel.utils import kron
+from kernel.ket.state import State
 
-x = sympy.Matrix(sympy.symbols('q1' + '_{(:2)}'))
-print(sympy.latex(x))
-sympy.pprint(x)
+s = State(["q1", "q2", "q3", "q4", "q6"])
+
+s.merge("q1", "q3")
+
+s.merge("q2", "q4")
+
+s.merge("q1", "q2")
+
+print("finish")

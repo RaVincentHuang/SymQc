@@ -78,11 +78,14 @@ save = store(Q, maps, args.output_list)
 
 idx = 1
 for instr in job_arr:
-    gate = Q.apply_instr(instr)
+    gate = Q.apply_instr_ket(instr)
 
-    if idx in save.out_list:
-        save.save_instr(Q.state, instr, gate)
+print("yes")
+    # gate = Q.apply_instr(instr)
 
-    idx += 1
-
-save.output_markdown(args.input, args.obj_name)
+#     if idx in save.out_list:
+#         save.save_instr(Q.state, instr, gate)
+#
+#     idx += 1
+#
+# save.output_markdown(args.input, args.obj_name)

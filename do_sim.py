@@ -2,7 +2,9 @@ from argparse import ArgumentParser
 from pathlib import Path
 from QCIS.parser import QCISParser, QCISOpCode
 from sympy import init_printing
-from kernel.qubit import Qsim
+from kernel.qubit import Qsim_state
+from kernel.ket.qubit import Qsim_ket
+from kernel.ket.store import store_ket
 from output.store import store
 from output.symbol_map import symbol_map
 
@@ -14,13 +16,13 @@ The main programme
 def compiler(_prog):
     """"""
     _parser = QCISParser()
-    success, instructions, names = _parser.parse(data=_prog)
+    success, instructions, name = _parser.parse(data=_prog)
     if not success:
         print(_parser.error_list)
         raise ValueError(
             "QCIS parser failed to compile the given QCIS program.")
 
-    return instructions, names
+    return instructions, name
 
 
 # 1. Argument parsing
@@ -37,6 +39,8 @@ my_parser.add_argument('-o', '--obj_name', required=False, type=str, default="a.
 my_parser.add_argument('-N', required=False, type=int, help='the number of qubits in the symbolic simulator')
 
 my_parser.add_argument("-s", "--symbol", help="use the symbol args", action="store_true")
+
+my_parser.add_argument("-k", "--ket", help="Use the ket present", action="store_true")
 args = my_parser.parse_args()
 
 qcis_fn = Path(args.input).resolve()
@@ -59,8 +63,6 @@ if args.N is not None and args.N > max_q:
     max_q = args.N
 
 # 3. Start simulating
-Q = Qsim(max_q, names)
-init_printing()
 maps = symbol_map()
 
 if args.symbol:
@@ -73,19 +75,20 @@ if args.symbol:
         elif instr.op_code == QCISOpCode.RX or instr.op_code == QCISOpCode.RY or instr.op_code == QCISOpCode.RZ:
             instr.altitude = maps.store_symbol("theta", instr.altitude)
 
+if args.ket:
+    Q = Qsim_ket(max_q, names)
+    save = store_ket(Q, maps, args.output_list)
+else:
+    Q = Qsim_state(max_q, names)
+    save = store(Q, maps, args.output_list)
 
-save = store(Q, maps, args.output_list)
 
+init_printing()
 idx = 1
 for instr in job_arr:
-    gate = Q.apply_instr_ket(instr)
-
-print("yes")
-    # gate = Q.apply_instr(instr)
-
-#     if idx in save.out_list:
-#         save.save_instr(Q.state, instr, gate)
-#
-#     idx += 1
-#
-# save.output_markdown(args.input, args.obj_name)
+    gate = Q.apply_instr(instr)
+    if idx in save.out_list:
+        save.save_instr(Q.state, instr, gate)
+    idx += 1
+save.save_final(Q.state)
+save.output_markdown(args.input, args.obj_name)

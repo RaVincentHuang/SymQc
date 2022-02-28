@@ -1,4 +1,5 @@
-from sympy import kronecker_product, Matrix, symbols
+from sympy import Matrix, symbols
+
 from kernel.utils import kron, make_ket
 
 
@@ -30,8 +31,8 @@ class Qutensor:
 
 class State:
     def __init__(self, names):
-        self.tensor = [Qutensor(qubit, Matrix([symbols("\\alpha_{%s}" % qubit), symbols("\\beta_{%s}" % qubit)])) for qubit
-                       in names]
+        self.tensor = [Qutensor(qubit, Matrix([symbols("\\alpha_{%s}" % qubit), symbols("\\beta_{%s}" % qubit)]))
+                       for qubit in names]
         self.size = len(names)
         self.map = dict([(qubit, i) for qubit, i in zip(names, range(self.size))])
 
@@ -64,7 +65,7 @@ class State:
         pass
 
     def judge(self, qubit1, qubit2):
-        return False
+        pass
 
     def get_pos(self, qubit):
         tensor = self.map[qubit]

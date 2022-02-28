@@ -1,5 +1,4 @@
-from sympy import Matrix, symbols
-
+from sympy import kronecker_product, Matrix, symbols
 from kernel.utils import kron, make_ket
 
 

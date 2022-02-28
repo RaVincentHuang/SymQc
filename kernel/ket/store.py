@@ -1,10 +1,9 @@
-from sympy import latex
-
-from QCIS.instr import QCIS_instr, QCISOpCode
+from output.store import store
+from kernel.ket.state import State
+from sympy import Matrix, latex, kronecker_product, symbols
 from kernel.gate import Gate
 from kernel.ket.qubit import Qsim_ket
-from kernel.ket.state import State
-from output.store import store
+from QCIS.instr import QCIS_instr, QCISOpCode
 from output.symbol_map import symbol_map
 
 
@@ -44,3 +43,6 @@ class store_ket(store):
 
     def write_init(self):
         return self.init_state[0]
+
+
+

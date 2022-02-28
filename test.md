@@ -2,41 +2,51 @@
 
 **Init state** is: 
 $$
-\left[\begin{matrix}a_{0} & a_{1} & a_{2} & a_{3}\end{matrix}\right]
+\left(\alpha_{Q1} \ket{0_{Q1}} + \beta_{Q1} \ket{1_{Q1}}\right) \left(\alpha_{Q2} \ket{0_{Q2}} + \beta_{Q2} \ket{1_{Q2}}\right)
 $$
 
 ```assembly
-1. H	q0
+1. H	Q1
 ```
 
 $$
 \left[\begin{matrix}\frac{\sqrt{2}}{2} & \frac{\sqrt{2}}{2}\\\frac{\sqrt{2}}{2} & - \frac{\sqrt{2}}{2}\end{matrix}\right]
 $$
 $$
-\left[\begin{matrix}\frac{\sqrt{2} a_{0}}{2} + \frac{\sqrt{2} a_{1}}{2} & \frac{\sqrt{2} a_{0}}{2} - \frac{\sqrt{2} a_{1}}{2} & \frac{\sqrt{2} a_{2}}{2} + \frac{\sqrt{2} a_{3}}{2} & \frac{\sqrt{2} a_{2}}{2} - \frac{\sqrt{2} a_{3}}{2}\end{matrix}\right]
+\left(\alpha_{Q2} \ket{0_{Q2}} + \beta_{Q2} \ket{1_{Q2}}\right) \left(\ket{0_{Q1}} \left(\frac{\sqrt{2} \alpha_{Q1}}{2} + \frac{\sqrt{2} \beta_{Q1}}{2}\right) + \ket{1_{Q1}} \left(\frac{\sqrt{2} \alpha_{Q1}}{2} - \frac{\sqrt{2} \beta_{Q1}}{2}\right)\right)
 $$
 ```assembly
-3. H	q1
+2. CNOT	Q1	Q2
 ```
 
 $$
-\left[\begin{matrix}\frac{\sqrt{2}}{2} & \frac{\sqrt{2}}{2}\\\frac{\sqrt{2}}{2} & - \frac{\sqrt{2}}{2}\end{matrix}\right]
+\left[\begin{matrix}0 & 1\\1 & 0\end{matrix}\right]
 $$
 $$
-\left[\begin{matrix}\frac{\sqrt{2} \left(\frac{\sqrt{2} a_{0}}{2} + \frac{\sqrt{2} a_{1}}{2}\right)}{2} + \frac{\sqrt{2} \left(\frac{\sqrt{2} a_{2}}{2} + \frac{\sqrt{2} a_{3}}{2}\right)}{2} & \frac{\sqrt{2} \left(\frac{\sqrt{2} a_{0}}{2} - \frac{\sqrt{2} a_{1}}{2}\right)}{2} + \frac{\sqrt{2} \left(\frac{\sqrt{2} a_{2}}{2} - \frac{\sqrt{2} a_{3}}{2}\right)}{2} & \frac{\sqrt{2} \left(\frac{\sqrt{2} a_{0}}{2} + \frac{\sqrt{2} a_{1}}{2}\right)}{2} - \frac{\sqrt{2} \left(\frac{\sqrt{2} a_{2}}{2} + \frac{\sqrt{2} a_{3}}{2}\right)}{2} & - \frac{\sqrt{2} \left(\frac{\sqrt{2} a_{0}}{2} - \frac{\sqrt{2} a_{1}}{2}\right)}{2} + \frac{\sqrt{2} \left(\frac{\sqrt{2} a_{2}}{2} - \frac{\sqrt{2} a_{3}}{2}\right)}{2}\end{matrix}\right]
+\alpha_{Q2} \ket{0_{Q1}0_{Q2}} \left(\frac{\sqrt{2} \alpha_{Q1}}{2} + \frac{\sqrt{2} \beta_{Q1}}{2}\right) + \alpha_{Q2} \ket{1_{Q1}0_{Q2}} \left(\frac{\sqrt{2} \alpha_{Q1}}{2} - \frac{\sqrt{2} \beta_{Q1}}{2}\right) + \beta_{Q2} \ket{1_{Q1}0_{Q2}} \left(\frac{\sqrt{2} \alpha_{Q1}}{2} - \frac{\sqrt{2} \beta_{Q1}}{2}\right) + \beta_{Q2} \ket{1_{Q1}1_{Q2}} \left(\frac{\sqrt{2} \alpha_{Q1}}{2} + \frac{\sqrt{2} \beta_{Q1}}{2}\right)
 $$
 ```assembly
-5. H	q1
+3. M	Q1
 ```
 
 $$
-\left[\begin{matrix}\frac{\sqrt{2}}{2} & \frac{\sqrt{2}}{2}\\\frac{\sqrt{2}}{2} & - \frac{\sqrt{2}}{2}\end{matrix}\right]
+\left[\begin{matrix}0 & 0\\0 & 1\end{matrix}\right]
 $$
 $$
-\left[\begin{matrix}\frac{\sqrt{2} \left(\frac{\sqrt{2} \left(\frac{\sqrt{2} a_{0}}{2} + \frac{\sqrt{2} a_{1}}{2}\right)}{2} - \frac{\sqrt{2} \left(\frac{\sqrt{2} a_{2}}{2} + \frac{\sqrt{2} a_{3}}{2}\right)}{2}\right)}{2} + \frac{\sqrt{2} \left(\frac{\sqrt{2} \left(\frac{\sqrt{2} a_{0}}{2} + \frac{\sqrt{2} a_{1}}{2}\right)}{2} + \frac{\sqrt{2} \left(\frac{\sqrt{2} a_{2}}{2} + \frac{\sqrt{2} a_{3}}{2}\right)}{2}\right)}{2} & \frac{\sqrt{2} \left(\frac{\sqrt{2} \left(\frac{\sqrt{2} a_{0}}{2} - \frac{\sqrt{2} a_{1}}{2}\right)}{2} - \frac{\sqrt{2} \left(\frac{\sqrt{2} a_{2}}{2} - \frac{\sqrt{2} a_{3}}{2}\right)}{2}\right)}{2} + \frac{\sqrt{2} \left(\frac{\sqrt{2} \left(\frac{\sqrt{2} a_{0}}{2} - \frac{\sqrt{2} a_{1}}{2}\right)}{2} + \frac{\sqrt{2} \left(\frac{\sqrt{2} a_{2}}{2} - \frac{\sqrt{2} a_{3}}{2}\right)}{2}\right)}{2} & - \frac{\sqrt{2} \left(\frac{\sqrt{2} \left(\frac{\sqrt{2} a_{0}}{2} + \frac{\sqrt{2} a_{1}}{2}\right)}{2} - \frac{\sqrt{2} \left(\frac{\sqrt{2} a_{2}}{2} + \frac{\sqrt{2} a_{3}}{2}\right)}{2}\right)}{2} + \frac{\sqrt{2} \left(\frac{\sqrt{2} \left(\frac{\sqrt{2} a_{0}}{2} + \frac{\sqrt{2} a_{1}}{2}\right)}{2} + \frac{\sqrt{2} \left(\frac{\sqrt{2} a_{2}}{2} + \frac{\sqrt{2} a_{3}}{2}\right)}{2}\right)}{2} & - \frac{\sqrt{2} \left(\frac{\sqrt{2} \left(\frac{\sqrt{2} a_{0}}{2} - \frac{\sqrt{2} a_{1}}{2}\right)}{2} - \frac{\sqrt{2} \left(\frac{\sqrt{2} a_{2}}{2} - \frac{\sqrt{2} a_{3}}{2}\right)}{2}\right)}{2} + \frac{\sqrt{2} \left(\frac{\sqrt{2} \left(\frac{\sqrt{2} a_{0}}{2} - \frac{\sqrt{2} a_{1}}{2}\right)}{2} + \frac{\sqrt{2} \left(\frac{\sqrt{2} a_{2}}{2} - \frac{\sqrt{2} a_{3}}{2}\right)}{2}\right)}{2}\end{matrix}\right]
+\beta_{Q2} \ket{1_{Q1}0_{Q2}} \left(\frac{\sqrt{2} \alpha_{Q1}}{2} - \frac{\sqrt{2} \beta_{Q1}}{2}\right) + \beta_{Q2} \ket{1_{Q1}1_{Q2}} \left(\frac{\sqrt{2} \alpha_{Q1}}{2} + \frac{\sqrt{2} \beta_{Q1}}{2}\right)
+$$
+```assembly
+4. M	Q2
+```
+
+$$
+\left[\begin{matrix}0 & 0\\0 & 1\end{matrix}\right]
+$$
+$$
+\beta_{Q2} \ket{1_{Q1}1_{Q2}} \left(\frac{\sqrt{2} \alpha_{Q1}}{2} + \frac{\sqrt{2} \beta_{Q1}}{2}\right)
 $$
 **Final state** is: 
 $$
-\left[\begin{matrix}\frac{\sqrt{2} \left(\frac{\sqrt{2} \left(\frac{\sqrt{2} a_{0}}{2} + \frac{\sqrt{2} a_{1}}{2}\right)}{2} - \frac{\sqrt{2} \left(\frac{\sqrt{2} a_{2}}{2} + \frac{\sqrt{2} a_{3}}{2}\right)}{2}\right)}{2} + \frac{\sqrt{2} \left(\frac{\sqrt{2} \left(\frac{\sqrt{2} a_{0}}{2} + \frac{\sqrt{2} a_{1}}{2}\right)}{2} + \frac{\sqrt{2} \left(\frac{\sqrt{2} a_{2}}{2} + \frac{\sqrt{2} a_{3}}{2}\right)}{2}\right)}{2} & \frac{\sqrt{2} \left(\frac{\sqrt{2} \left(\frac{\sqrt{2} a_{0}}{2} - \frac{\sqrt{2} a_{1}}{2}\right)}{2} - \frac{\sqrt{2} \left(\frac{\sqrt{2} a_{2}}{2} - \frac{\sqrt{2} a_{3}}{2}\right)}{2}\right)}{2} + \frac{\sqrt{2} \left(\frac{\sqrt{2} \left(\frac{\sqrt{2} a_{0}}{2} - \frac{\sqrt{2} a_{1}}{2}\right)}{2} + \frac{\sqrt{2} \left(\frac{\sqrt{2} a_{2}}{2} - \frac{\sqrt{2} a_{3}}{2}\right)}{2}\right)}{2} & - \frac{\sqrt{2} \left(\frac{\sqrt{2} \left(\frac{\sqrt{2} a_{0}}{2} + \frac{\sqrt{2} a_{1}}{2}\right)}{2} - \frac{\sqrt{2} \left(\frac{\sqrt{2} a_{2}}{2} + \frac{\sqrt{2} a_{3}}{2}\right)}{2}\right)}{2} + \frac{\sqrt{2} \left(\frac{\sqrt{2} \left(\frac{\sqrt{2} a_{0}}{2} + \frac{\sqrt{2} a_{1}}{2}\right)}{2} + \frac{\sqrt{2} \left(\frac{\sqrt{2} a_{2}}{2} + \frac{\sqrt{2} a_{3}}{2}\right)}{2}\right)}{2} & - \frac{\sqrt{2} \left(\frac{\sqrt{2} \left(\frac{\sqrt{2} a_{0}}{2} - \frac{\sqrt{2} a_{1}}{2}\right)}{2} - \frac{\sqrt{2} \left(\frac{\sqrt{2} a_{2}}{2} - \frac{\sqrt{2} a_{3}}{2}\right)}{2}\right)}{2} + \frac{\sqrt{2} \left(\frac{\sqrt{2} \left(\frac{\sqrt{2} a_{0}}{2} - \frac{\sqrt{2} a_{1}}{2}\right)}{2} + \frac{\sqrt{2} \left(\frac{\sqrt{2} a_{2}}{2} - \frac{\sqrt{2} a_{3}}{2}\right)}{2}\right)}{2}\end{matrix}\right]
+\beta_{Q2} \ket{1_{Q1}1_{Q2}} \left(\frac{\sqrt{2} \alpha_{Q1}}{2} + \frac{\sqrt{2} \beta_{Q1}}{2}\right)
 $$
 

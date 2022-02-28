@@ -23,5 +23,3 @@ class symbol_map:
 
     def get_symbol(self, symbol: symbols):
         return self.symbol_table[symbol]
-
-

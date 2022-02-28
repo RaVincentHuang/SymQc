@@ -1,4 +1,5 @@
 from sympy import Matrix
+from math import log2, ceil
 
 
 def kron(A, B):
@@ -44,3 +45,22 @@ def get_discrete(x):
     for i in range(len(rx)):
         res[rx[i][1]] = i
     return res
+
+
+def str_bin(x, n):
+    s = bin(x)[2:]
+    return s + "0" * (n - len(s))
+
+
+def make_bin(x, n, keys):
+    s = str_bin(x, n)
+    return "".join(["%s_{%s}" % (i, j) for i, j in zip(s, keys)])
+
+
+def make_ket(keys):
+    n = len(keys)
+    return [make_bin(i, n, keys) for i in range(1 << n)]
+
+
+
+

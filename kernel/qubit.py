@@ -3,79 +3,17 @@ import sympy
 from kernel.gate import Gate, ParametersGate
 from QCIS.instr import QCIS_instr, QCISOpCode
 from kernel.gates_lib import lib_gate
-from kernel.ket.state import State
 
 
 class Qsim:
-    def __init__(self, n, name):
-        self.ket_state = State(name)
-
-        self.state = sympy.Matrix(sympy.symbols('a:' + "%d" % (1 << n)))
+    def __init__(self, n):
+        self.state = None
         self.qubits_num = n
 
         self.global_circuit = None
-        self.map = {}
-        self.in_use = 0
-        for qubit in name:
-            self.map[qubit] = self.in_use
-            self.in_use += 1
 
     def apply(self):
         pass
-
-    def apply_instr(self, instr: QCIS_instr):
-        if instr.op_code.is_single_qubit_op():
-            gate = Gate(lib_gate(instr))
-            qubit = self.map[instr.qubit]
-            self.apply_gate(gate, [qubit])
-        elif instr.op_code.is_two_qubit_op():
-            if instr.op_code == QCISOpCode.CNOT or instr.op_code == QCISOpCode.CZ:
-                gate = Gate(lib_gate(instr), 1)
-                qubit = self.map[instr.target_qubit]
-                ctrl = self.map[instr.control_qubit]
-                self.apply_gate(gate, [ctrl, qubit])
-            else:
-                gate = Gate(lib_gate(instr))
-                qubit = self.map[instr.target_qubit]
-                fake_ctrl = self.map[instr.control_qubit]
-                self.apply_gate(gate, [qubit, fake_ctrl])
-        elif instr.op_code.is_measure_op():
-            gate = Gate(lib_gate(instr))
-            qubit_list = [self.map[qubit] for qubit in instr.qubits_list]
-            for qubit in qubit_list:
-                self.apply_gate(gate, [qubit])
-
-        return gate
-
-    def apply_instr_ket(self, instr: QCIS_instr):
-        if instr.op_code.is_single_qubit_op():
-            gate = Gate(lib_gate(instr))
-            tensor, qubit = self.ket_state.get_pos(instr.qubit)
-            self.state = self.ket_state.tensor[tensor].state
-            self.qubits_num = self.ket_state.tensor[tensor].size
-            self.ket_state.tensor[tensor].state = self.apply_gate(gate, [qubit])
-        elif instr.op_code.is_two_qubit_op():
-            if instr.op_code == QCISOpCode.CNOT or instr.op_code == QCISOpCode.CZ:
-                gate = Gate(lib_gate(instr), 1)
-                tensor, qubit, ctrl = self.ket_state.merge(instr.target_qubit, instr.control_qubit)
-                self.state = self.ket_state.tensor[tensor].state
-                self.qubits_num = self.ket_state.tensor[tensor].size
-                self.ket_state.tensor[tensor].state = self.apply_gate(gate, [ctrl, qubit])
-            else:
-                gate = Gate(lib_gate(instr))
-                tensor, qubit, fake_ctrl = self.ket_state.merge(instr.target_qubit, instr.control_qubit)
-                self.state = self.ket_state.tensor[tensor].state
-                self.qubits_num = self.ket_state.tensor[tensor].size
-                self.ket_state.tensor[tensor].state = self.apply_gate(gate, [qubit, fake_ctrl])
-        elif instr.op_code.is_measure_op():
-            gate = Gate(lib_gate(instr))
-            qubit_list = [self.ket_state.get_pos(qubit) for qubit in instr.qubits_list]
-            for tensor, qubit in qubit_list:
-                self.state = self.ket_state.tensor[tensor].state
-                self.qubits_num = self.ket_state.tensor[tensor].size
-                self.ket_state.tensor[tensor].state = self.apply_gate(gate, [qubit])
-
-        return gate
 
     def apply_gate(self, gate: Gate, target_qubits: list, parameters=None, extra_optional_control_qubits=None) \
             -> sympy.Matrix:
@@ -111,3 +49,39 @@ class Qsim:
                 for i, j in zip(addrs, x):
                     self.state[i] = j
         return self.state
+
+
+class Qsim_state(Qsim):
+    def __init__(self, n, name):
+        super().__init__(n)
+        self.state = sympy.Matrix(sympy.symbols('a:' + "%d" % (1 << n)))
+
+        self.map = {}
+        self.in_use = 0
+        for qubit in name:
+            self.map[qubit] = self.in_use
+            self.in_use += 1
+
+    def apply_instr(self, instr: QCIS_instr):
+        if instr.op_code.is_single_qubit_op():
+            gate = Gate(lib_gate(instr))
+            qubit = self.map[instr.qubit]
+            self.apply_gate(gate, [qubit])
+        elif instr.op_code.is_two_qubit_op():
+            if instr.op_code == QCISOpCode.CNOT or instr.op_code == QCISOpCode.CZ:
+                gate = Gate(lib_gate(instr), 1)
+                qubit = self.map[instr.target_qubit]
+                ctrl = self.map[instr.control_qubit]
+                self.apply_gate(gate, [ctrl, qubit])
+            else:
+                gate = Gate(lib_gate(instr))
+                qubit = self.map[instr.target_qubit]
+                fake_ctrl = self.map[instr.control_qubit]
+                self.apply_gate(gate, [qubit, fake_ctrl])
+        elif instr.op_code.is_measure_op():
+            gate = Gate(lib_gate(instr))
+            qubit_list = [self.map[qubit] for qubit in instr.qubits_list]
+            for qubit in qubit_list:
+                self.apply_gate(gate, [qubit])
+
+        return gate

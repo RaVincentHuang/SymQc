@@ -49,7 +49,7 @@ def get_discrete(x):
 
 def str_bin(x, n):
     s = bin(x)[2:]
-    return s + "0" * (n - len(s))
+    return "0" * (n - len(s)) + s
 
 
 def make_bin(x, n, keys):

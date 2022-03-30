@@ -2,6 +2,18 @@ from sympy import Matrix
 from math import log2, ceil
 
 
+def find_main(state, qubit):
+    p0 = 0
+    p1 = 0
+    for i in range(len(state)):
+        num = state[i]
+        if (i >> qubit) & 0x1:
+            p1 += num * num
+        else:
+            p0 += num * num
+    return p0, p1
+
+
 def kron(A, B):
     """Return the Kronecker product of matrix A and matrix B"""
     return Matrix(
@@ -49,7 +61,7 @@ def get_discrete(x):
 
 def str_bin(x, n):
     s = bin(x)[2:]
-    return "0" * (n - len(s)) + s
+    return reversed("0" * (n - len(s)) + s)
 
 
 def make_bin(x, n, keys):

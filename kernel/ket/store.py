@@ -1,4 +1,4 @@
-from sympy import latex
+from sympy import latex, sqrt, factor, simplify, pprint, cancel
 
 from QCIS.instr import QCIS_instr, QCISOpCode
 from kernel.gate import Gate
@@ -29,18 +29,22 @@ class store_ket(store):
         self.instr_save.append(ins_str)
 
         f = 1
+        A = 1
         for tensor in state.tensor:
             if tensor:
                 f *= (tensor.state.transpose() * tensor.ket)
-        self.state_save.append(latex(f[0]))
+                A *= factor(tensor.pre) / factor(tensor.now)
+        self.state_save.append(latex((f[0] * sqrt(factor(A)))))
         self.gate_save.append(latex(gate.matrix))
 
     def save_final(self, state: State):
         f = 1
+        A = 1
         for tensor in state.tensor:
             if tensor:
                 f *= (tensor.state.transpose() * tensor.ket)
-        self.final_state = latex(f[0])
+                A *= factor(tensor.pre) / factor(tensor.now)
+        self.final_state = latex(f[0] * sqrt(factor(A)))
 
     def write_init(self):
         return self.init_state[0]

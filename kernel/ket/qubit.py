@@ -3,6 +3,9 @@ from kernel.gate import Gate
 from kernel.gates_lib import lib_gate
 from kernel.ket.state import State
 from kernel.qubit import Qsim
+from kernel.utils import find_main
+from random import random
+from sympy import Matrix
 
 
 class Qsim_ket(Qsim):
@@ -37,10 +40,22 @@ class Qsim_ket(Qsim):
         elif instr.op_code.is_measure_op():
             gate = Gate(lib_gate(instr))
             qubit_list = [self.ket_state.get_pos(qubit) for qubit in instr.qubits_list]
-            for tensor, qubit in qubit_list:
+            for (tensor, state), qubit in zip(qubit_list, instr.qubits_list):
+
                 self.state = self.ket_state.tensor[tensor].state
                 self.qubits_num = self.ket_state.tensor[tensor].size
-                self.ket_state.tensor[tensor].state = self.apply_gate(gate, [qubit])
+                tmp = self.state
+                for a, b in self.ket_state.symbols:
+                    tmp = tmp.subs(a, 1)
+                    tmp = tmp.subs(b, 0)
+                p0, p1 = find_main(tmp, state)
+                k = random()
+                if k < p0 / (p0 + p1):
+                    self.ket_state.tensor[tensor].state = self.apply_gate(Gate(Matrix([[1, 0], [0, 0]])), [state])
+                    self.ket_state.measure(tensor, state, qubit, 0)
+                else:
+                    self.ket_state.tensor[tensor].state = self.apply_gate(Gate(Matrix([[0, 0], [0, 1]])), [state])
+                    self.ket_state.measure(tensor, state, qubit, 1)
 
         self.state = self.ket_state
 

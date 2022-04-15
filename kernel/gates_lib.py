@@ -8,7 +8,7 @@ sigma_z = sympy.Matrix([[1, 0], [0, -1]])
 
 
 def R(n_head, theta):
-    sigma_head = sympy.Matrix([sigma_x, sigma_y, sigma_z])
+    sympy.Matrix([sigma_x, sigma_y, sigma_z])
     n1 = n_head[0]
     n2 = n_head[1]
     n3 = n_head[2]
@@ -287,7 +287,3 @@ def lib_gate(instr: QCIS_instr):
         return QCIS_gate[instr.op_code](instr.altitude)
     else:
         return QCIS_gate[instr.op_code]()
-
-
-
-

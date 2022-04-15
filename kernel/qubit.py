@@ -84,5 +84,4 @@ class Qsim_state(Qsim):
             for qubit in qubit_list:
                 self.apply_gate(gate, [qubit])
 
-
         return gate

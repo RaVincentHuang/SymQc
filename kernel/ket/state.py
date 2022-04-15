@@ -12,8 +12,16 @@ class Qutensor:
         self.pre = sum([i * i for i in self.state])
         self.now = sum([i * i for i in self.state])
 
+    def reset(self, qubit, vec):
+        self.size = 1
+        self.state = vec
+        self.map = {qubit: 0}
+        self.ket = Matrix([symbols("\\ket{0_{%s}}" % qubit), symbols("\\ket{1_{%s}}" % qubit)])
+        self.pre = sum([i * i for i in self.state])
+        self.now = sum([i * i for i in self.state])
+
     def insert_tensor(self, tensor):
-        self.state = kron(self.state, tensor.state)
+        self.state = kron(tensor.state, self.state)
         for key in tensor.map.keys():
             tensor.map[key] += self.size
         self.size += tensor.size
@@ -25,7 +33,7 @@ class Qutensor:
     def insert_qubit(self, qubit, vec):
         self.map[qubit] = self.size
         self.size += 1
-        self.state = kron(self.state, vec)
+        self.state = kron(vec, self.state)
 
     def clear_zero(self, state, qubit, height):
         s = []
@@ -36,7 +44,10 @@ class Qutensor:
         pre = self.now
         now = sum([i * i for i in self.state])
         if self.size == 1:
-            self.ket = self.ket[height]
+            if height:
+                self.reset(qubit, Matrix([0, 1]))
+            else:
+                self.reset(qubit, Matrix([1, 0]))
             return pre, now, False
         self.size -= 1
 
@@ -118,3 +129,9 @@ class State:
         tensor = self.map[qubit]
         state = self.tensor[tensor].map[qubit]
         return tensor, state
+
+    def check_single(self):
+        for tensor in self.tensor:
+            if tensor.state[0] != 1 and tensor.state[0] != 0:
+                return False
+        return True

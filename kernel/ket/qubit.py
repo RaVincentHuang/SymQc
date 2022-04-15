@@ -5,7 +5,7 @@ from kernel.ket.state import State
 from kernel.qubit import Qsim
 from kernel.utils import find_main
 from random import random
-from sympy import Matrix
+from sympy import Matrix, pprint
 
 
 class Qsim_ket(Qsim):

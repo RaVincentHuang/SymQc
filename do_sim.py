@@ -41,6 +41,7 @@ my_parser.add_argument('-N', required=False, type=int, help='the number of qubit
 my_parser.add_argument("-s", "--symbol", help="use the symbol args", action="store_true")
 
 my_parser.add_argument("-k", "--ket", help="Use the ket present", action="store_true")
+
 args = my_parser.parse_args()
 
 qcis_fn = Path(args.input).resolve()

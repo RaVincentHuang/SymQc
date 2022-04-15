@@ -1,5 +1,4 @@
 from sympy import Matrix
-from math import log2, ceil
 
 
 def find_main(state, qubit):
@@ -61,7 +60,7 @@ def get_discrete(x):
 
 def str_bin(x, n):
     s = bin(x)[2:]
-    return reversed("0" * (n - len(s)) + s)
+    return "0" * (n - len(s)) + s
 
 
 def make_bin(x, n, keys):
@@ -69,10 +68,7 @@ def make_bin(x, n, keys):
     return "".join(["%s_{%s}" % (i, j) for i, j in zip(s, keys)])
 
 
-def make_ket(keys):
+def make_ket(keys: list):
+    keys.reverse()
     n = len(keys)
     return [make_bin(i, n, keys) for i in range(1 << n)]
-
-
-
-

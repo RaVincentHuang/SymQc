@@ -1,4 +1,4 @@
-from sympy import latex, sqrt, factor, simplify, pprint, cancel
+from sympy import latex, sqrt, factor, pprint
 
 from QCIS.instr import QCIS_instr, QCISOpCode
 from kernel.gate import Gate
@@ -39,10 +39,16 @@ class store_ket(store):
 
     def save_final(self, state: State):
         f = 1
-        A = 1
         for tensor in state.tensor:
             if tensor:
                 f *= (tensor.state.transpose() * tensor.ket)
+        if state.check_single():
+            self.final_state = latex(f[0])
+            pprint(f[0])
+            return
+        A = 1
+        for tensor in state.tensor:
+            if tensor:
                 A *= factor(tensor.pre) / factor(tensor.now)
         self.final_state = latex(f[0] * sqrt(factor(A)))
 

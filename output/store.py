@@ -54,6 +54,3 @@ class store:
             for x, y in self.symbol_map.symbol_table.items():
                 file.write("$%s$ : %f\t\t" % (latex(x), y))
         file.close()
-
-
-
